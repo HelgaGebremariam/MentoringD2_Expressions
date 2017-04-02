@@ -9,14 +9,15 @@ namespace Sample03
 {
 	public class ExpressionToFTSRequestTranslator : ExpressionVisitor
 	{
-		StringBuilder resultString;
+		List<StringBuilder> resultStrings;
 
-		public string Translate(Expression exp)
+		public List<string> Translate(Expression exp)
 		{
-			resultString = new StringBuilder();
+			resultStrings = new List<StringBuilder>();
+            resultStrings.Add(new StringBuilder());
 			Visit(exp);
 
-			return resultString.ToString();
+            return resultStrings.Select(r => r.ToString()).ToList();
 		}
 
 		protected override Expression VisitMethodCall(MethodCallExpression node)
@@ -34,9 +35,9 @@ namespace Sample03
                 && node.Method.Name == "Contains")
             {
                 Visit(node.Object);
-                resultString.Append("(*");
-                resultString.Append(((ConstantExpression)node.Arguments[0]).Value);
-                resultString.Append("*)");
+                resultStrings.Last().Append("(*");
+                Visit(node.Arguments[0]);
+                resultStrings.Last().Append("*)");
                 return node;
             }
 
@@ -44,9 +45,9 @@ namespace Sample03
                 && node.Method.Name == "StartsWith")
             {
                 Visit(node.Object);
-                resultString.Append("(");
-                resultString.Append(((ConstantExpression)node.Arguments[0]).Value);
-                resultString.Append("*)");
+                resultStrings.Last().Append("(");
+                Visit(node.Arguments[0]);
+                resultStrings.Last().Append("*)");
                 return node;
             }
 
@@ -54,9 +55,9 @@ namespace Sample03
                 && node.Method.Name == "EndsWith")
             {
                 Visit(node.Object);
-                resultString.Append("(*");
-                resultString.Append(((ConstantExpression)node.Arguments[0]).Value);
-                resultString.Append(")");
+                resultStrings.Last().Append("(*");
+                Visit(node.Arguments[0]);
+                resultStrings.Last().Append(")");
                 return node;
             }
 
@@ -67,22 +68,29 @@ namespace Sample03
 		{
 			switch (node.NodeType)
 			{
+                case ExpressionType.AndAlso:
+                    {
+                        Visit(node.Left);
+                        resultStrings.Add(new StringBuilder());
+                        Visit(node.Right);
+                        break;
+                    }
 				case ExpressionType.Equal:
 					if ((node.Left.NodeType == ExpressionType.MemberAccess) && (node.Right.NodeType == ExpressionType.Constant))
                     {
                         Visit(node.Left);
-                        resultString.Append("(");
+                        resultStrings.Last().Append("(");
                         Visit(node.Right);
-                        resultString.Append(")");
+                        resultStrings.Last().Append(")");
                         break;
                     }
 
                     if ((node.Right.NodeType == ExpressionType.MemberAccess) && (node.Left.NodeType == ExpressionType.Constant))
                     {
                         Visit(node.Right);
-                        resultString.Append("(");
+                        resultStrings.Last().Append("(");
                         Visit(node.Left);
-                        resultString.Append(")");
+                        resultStrings.Last().Append(")");
                         break;
                     }
 						throw new NotSupportedException(string.Format("Right operand should be constant", node.NodeType));
@@ -95,14 +103,14 @@ namespace Sample03
 
 		protected override Expression VisitMember(MemberExpression node)
 		{
-			resultString.Append(node.Member.Name).Append(":");
+            resultStrings.Last().Append(node.Member.Name).Append(":");
 
 			return base.VisitMember(node);
 		}
 
 		protected override Expression VisitConstant(ConstantExpression node)
 		{
-			resultString.Append(node.Value);
+            resultStrings.Last().Append(node.Value);
 
 			return node;
 		}

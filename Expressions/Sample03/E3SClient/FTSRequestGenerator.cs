@@ -21,27 +21,26 @@ namespace Sample03.E3SClient
 			BaseAddress = baseAddress;
 		}
 
-		public Uri GenerateRequestUrl<T>(string query = "*", int start = 0, int limit = 10)
+		public Uri GenerateRequestUrl<T>(List<string> queries = null, int start = 0, int limit = 10)
 		{
-			return GenerateRequestUrl(typeof(T), query, start, limit);
+			return GenerateRequestUrl(typeof(T), queries, start, limit);
 		}
 
-		public Uri GenerateRequestUrl(Type type, string query = "*", int start = 0, int limit = 10)
+		public Uri GenerateRequestUrl(Type type, List<string> queries = null, int start = 0, int limit = 10)
 		{
 			string metaTypeName = GetMetaTypeName(type);
 
 			var ftsQueryRequest = new FTSQueryRequest
 			{
-				Statements = new List<Statement>
-				{
-					new Statement {
-						Query = query
-					}
-				},
+
+				Statements = new List<Statement>(),
 				Start = start,
 				Limit = limit
 			};
-
+            for (int i = 0; i < queries.Count; i++)
+            {
+                ftsQueryRequest.Statements.Add(new Statement { Query = queries[i] });
+            }
 			var ftsQueryRequestString = JsonConvert.SerializeObject(ftsQueryRequest);
 
 			var uri = FTSSearchTemplate.BindByName(BaseAddress,
