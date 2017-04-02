@@ -14,10 +14,11 @@ namespace ExpressionViewerConsole
         static void Main(string[] args)
         {
             Expression<Func<int, int>> source_exp = (c) => c - 1 + 2 * c;
-            var exchangeRules = new List<KeyValuePair<string, object>>();
-            exchangeRules.Add(new KeyValuePair<string, object>("c", 1));
+            var exchangeRules = new Dictionary<string, object>();
+            exchangeRules.Add("c", 1);
             ExpressionVisitorTransformer visitor = new ExpressionVisitorTransformer(exchangeRules);
-            visitor.VisitAndConvert(source_exp, "");
+            Expression expr = source_exp;
+            visitor.VisitAndConvert(expr, "");
 
         }
     }

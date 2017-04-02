@@ -9,10 +9,10 @@ namespace Expressions
 {
     public class ExpressionVisitorTransformer : ExpressionVisitor
     {
-        private IEnumerable<KeyValuePair<string, object>> exchangeParameters;
+        private Dictionary<string, object> exchangeParameters;
         public ExpressionVisitorTransformer() { }
 
-        public ExpressionVisitorTransformer(IEnumerable<KeyValuePair<string, object>> exchangeParameters) : base()
+        public ExpressionVisitorTransformer(Dictionary<string, object> exchangeParameters) : base()
         {
             this.exchangeParameters = exchangeParameters;
         }
@@ -35,13 +35,17 @@ namespace Expressions
 
         protected override Expression VisitParameter(ParameterExpression parameter)
         {
-            var exchangeParameter = exchangeParameters.Where(p => p.Key == parameter.Name).FirstOrDefault();
-            if(exchangeParameter.Value == null)
+            object val;
+            if(!exchangeParameters.TryGetValue(parameter.Name, out val))
             {
                 return base.VisitParameter(parameter);
             }
-            return Expression.Constant(exchangeParameter.Value);
+            return Expression.Constant(val, parameter.Type);
+        }
 
+        protected override Expression VisitLambda<T>(Expression<T> node)
+        {
+            return Expression.Lambda(Visit(node.Body), node.Name, node.Parameters.Where(parameterExpression => !exchangeParameters.ContainsKey(parameterExpression.Name)));
         }
 
         //protected override Expression VisitBinary(BinaryExpression node)
