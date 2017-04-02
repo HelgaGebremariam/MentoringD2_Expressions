@@ -17,8 +17,7 @@ namespace ExpressionViewerConsole
             var exchangeRules = new Dictionary<string, object>();
             exchangeRules.Add("c", 1);
             ExpressionVisitorTransformer visitor = new ExpressionVisitorTransformer(exchangeRules);
-            Expression expr = source_exp;
-            visitor.VisitAndConvert(expr, "");
+            var expr = visitor.Visit(source_exp);
 
         }
     }

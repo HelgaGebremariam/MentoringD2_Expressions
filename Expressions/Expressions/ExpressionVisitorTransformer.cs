@@ -48,16 +48,18 @@ namespace Expressions
             return Expression.Lambda(Visit(node.Body), node.Name, node.Parameters.Where(parameterExpression => !exchangeParameters.ContainsKey(parameterExpression.Name)));
         }
 
-        //protected override Expression VisitBinary(BinaryExpression node)
-        //{
-        //    if (IsIntegerParameterType(node.Left) && IsConstantOneParameterType(node.Right))
-        //    {
-        //        if (node.NodeType == ExpressionType.Add)
-        //            return Expression.Increment(node.Left);
-        //        if (node.NodeType == ExpressionType.Subtract)
-        //            return Expression.Decrement(node.Left);
-        //    }
-        //    return base.Visit(node);
-        //}
+        protected override Expression VisitBinary(BinaryExpression node)
+        {
+            if (IsIntegerParameterType(node.Left) && IsConstantOneParameterType(node.Right))
+            {
+                if (node.NodeType == ExpressionType.Add)
+                    return Expression.Increment(node.Left);
+                if (node.NodeType == ExpressionType.Subtract)
+                    return Expression.Decrement(node.Left);
+            }
+            var left = Visit(node.Left);
+            var right = Visit(node.Right);
+            return Expression.MakeBinary(node.NodeType, left, right);
+        }
     }
 }
