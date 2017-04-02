@@ -14,25 +14,25 @@ namespace Sample03
 		public void WithoutProvider()
 		{
 			var client = new E3SQueryClient(ConfigurationManager.AppSettings["user"] , ConfigurationManager.AppSettings["password"]);
-			//var res = client.SearchFTS<EmployeeEntity>("workstation:(EPRUIZHW0249)", 0, 1);
+            var res = client.SearchFTS<EmployeeEntity>(0, 1, "workstation:(EPRUIZHW0249)");
 
-			//foreach (var emp in res)
-			//{
-			//	Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
-			//}
-		}
+            foreach (var emp in res)
+            {
+                Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
+            }
+        }
 
 		[TestMethod]
 		public void WithoutProviderNonGeneric()
 		{
 			var client = new E3SQueryClient(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
-			//var res = client.SearchFTS(typeof(EmployeeEntity), "workstation:(EPRUIZHW0249)", 0, 10);
+            var res = client.SearchFTS(typeof(EmployeeEntity), 0, 10, "workstation:(EPRUIZHW0249)");
 
-			//foreach (var emp in res.OfType<EmployeeEntity>())
-			//{
-			//	Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
-			//}
-		}
+            foreach (var emp in res.OfType<EmployeeEntity>())
+            {
+                Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
+            }
+        }
 
 
 		[TestMethod]
