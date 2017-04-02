@@ -40,10 +40,45 @@ namespace Sample03
 		{
 			var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
 
-			foreach (var emp in employees.Where(e => e.workstation == "EPRUIZHW0249"))
-			{
-				Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
-			}
+            foreach (var emp in employees.Where(e => e.workstation == "EPRUIZHW0249"))
+            {
+                Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
+            }
+
+
         }
-	}
+
+        [TestMethod]
+        public void StartsWithTest()
+        {
+            var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
+
+            foreach (var emp in employees.Where(e => e.workstation.StartsWith("EPRUIZHW0249")))
+            {
+                Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
+            }
+        }
+
+        [TestMethod]
+        public void EndsWithTest()
+        {
+            var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
+
+            foreach (var emp in employees.Where(e => e.workstation.EndsWith("EPRUIZHW0249")))
+            {
+                Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
+            }
+        }
+
+        [TestMethod]
+        public void ContainsWithTest()
+        {
+            var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
+
+            foreach (var emp in employees.Where(e => e.workstation.Contains("EPRUIZHW0249")))
+            {
+                Console.WriteLine("{0} {1}", emp.nativename, emp.startworkdate);
+            }
+        }
+    }
 }

@@ -29,7 +29,35 @@ namespace Sample03
 
 				return node;
 			}
-			return base.VisitMethodCall(node);
+
+            if (node.Method.DeclaringType == typeof(string)
+                && node.Method.Name == "Contains")
+            {
+                resultString.Append("(*");
+                resultString.Append(node.Arguments[0]);
+                resultString.Append("*)");
+                return node;
+            }
+
+            if (node.Method.DeclaringType == typeof(string)
+                && node.Method.Name == "StartsWith")
+            {
+                resultString.Append("(");
+                resultString.Append(node.Arguments[0]);
+                resultString.Append("*)");
+                return node;
+            }
+
+            if (node.Method.DeclaringType == typeof(string)
+                && node.Method.Name == "EndsWith")
+            {
+                resultString.Append("(*");
+                resultString.Append(node.Arguments[0]);
+                resultString.Append(")");
+                return node;
+            }
+
+            return base.VisitMethodCall(node);
 		}
 
 		protected override Expression VisitBinary(BinaryExpression node)
@@ -55,7 +83,6 @@ namespace Sample03
                         break;
                     }
 						throw new NotSupportedException(string.Format("Right operand should be constant", node.NodeType));
-
 				default:
 					throw new NotSupportedException(string.Format("Operation {0} is not supported", node.NodeType));
 			};
