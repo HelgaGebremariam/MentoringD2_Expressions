@@ -71,7 +71,7 @@ namespace Sample03
         }
 
         [TestMethod]
-        public void ContainsWithTest()
+        public void ContainsTest()
         {
             var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
 

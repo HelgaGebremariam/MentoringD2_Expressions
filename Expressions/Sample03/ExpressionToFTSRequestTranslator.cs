@@ -33,8 +33,9 @@ namespace Sample03
             if (node.Method.DeclaringType == typeof(string)
                 && node.Method.Name == "Contains")
             {
+                Visit(node.Object);
                 resultString.Append("(*");
-                resultString.Append(node.Arguments[0]);
+                resultString.Append(((ConstantExpression)node.Arguments[0]).Value);
                 resultString.Append("*)");
                 return node;
             }
@@ -42,8 +43,9 @@ namespace Sample03
             if (node.Method.DeclaringType == typeof(string)
                 && node.Method.Name == "StartsWith")
             {
+                Visit(node.Object);
                 resultString.Append("(");
-                resultString.Append(node.Arguments[0]);
+                resultString.Append(((ConstantExpression)node.Arguments[0]).Value);
                 resultString.Append("*)");
                 return node;
             }
@@ -51,8 +53,9 @@ namespace Sample03
             if (node.Method.DeclaringType == typeof(string)
                 && node.Method.Name == "EndsWith")
             {
+                Visit(node.Object);
                 resultString.Append("(*");
-                resultString.Append(node.Arguments[0]);
+                resultString.Append(((ConstantExpression)node.Arguments[0]).Value);
                 resultString.Append(")");
                 return node;
             }
