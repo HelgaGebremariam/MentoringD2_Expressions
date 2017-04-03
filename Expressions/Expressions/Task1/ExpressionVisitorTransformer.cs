@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 
-namespace Expressions
+namespace Expressions.Task1
 {
     public class ExpressionVisitorTransformer : ExpressionVisitor
     {
@@ -18,17 +18,17 @@ namespace Expressions
         }
 
 
-        private bool IsIntegerParameterType(Expression node)
+        private bool IsParameterHasType<T>(Expression node)
         {
-            return (node.NodeType == ExpressionType.Parameter && node.Type == typeof(int));
+            return (node.NodeType == ExpressionType.Parameter && node.Type == typeof(T));
         }
 
-        private bool IsConstantOneParameterType(Expression node)
+        private bool IsParameterEqualValue(Expression node, int value)
         {
             var expr = node as ConstantExpression;
             if(expr != null && expr.Type == typeof(int))
             {
-                return (int)expr.Value == 1;
+                return (int)expr.Value == value;
             }
             return false;
         }
@@ -50,16 +50,14 @@ namespace Expressions
 
         protected override Expression VisitBinary(BinaryExpression node)
         {
-            if (IsIntegerParameterType(node.Left) && IsConstantOneParameterType(node.Right))
+            if (IsParameterHasType<int>(node.Left) && IsParameterEqualValue(node.Right, 1) && !exchangeParameters.Any(s=>s.Key == ((ParameterExpression)node.Left).Name))
             {
                 if (node.NodeType == ExpressionType.Add)
                     return Expression.Increment(node.Left);
                 if (node.NodeType == ExpressionType.Subtract)
                     return Expression.Decrement(node.Left);
             }
-            var left = Visit(node.Left);
-            var right = Visit(node.Right);
-            return Expression.MakeBinary(node.NodeType, left, right);
+            return base.VisitBinary(node);
         }
     }
 }

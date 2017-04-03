@@ -37,7 +37,7 @@ namespace Expressions
                 from sourceProp in sourceProps
                 from destinationProp in destinationProps
                 where destinationProp.Name == sourceProp.Name &&
-                      destinationProp.PropertyType.FullName == sourceProp.PropertyType.FullName
+                      destinationProp.PropertyType == sourceProp.PropertyType
                 select sourceProp).ToList();
 
             return neededProps;
