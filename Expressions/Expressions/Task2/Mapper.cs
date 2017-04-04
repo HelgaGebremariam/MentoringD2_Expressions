@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Expressions
+namespace Expressions.Task2
 {
     public class Mapper<TSource, TDestination>
     {
