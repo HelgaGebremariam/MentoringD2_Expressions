@@ -4,7 +4,6 @@ using Sample03.E3SClient.Entities;
 using Sample03.E3SClient;
 using System.Configuration;
 using System.Linq;
-using Moq;
 
 namespace Sample03
 {
@@ -15,8 +14,6 @@ namespace Sample03
         [TestMethod]
         public void StartsWithTest()
         {
-			var e3sQueryClientMock = new Mock<E3SQueryClient>();
-			e3sQueryClientMock.Setup(x => x.SearchFTS(It.IsAny<Type>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string[]>()));
 			var employees = new E3SEntitySet<EmployeeEntity>(ConfigurationManager.AppSettings["user"], ConfigurationManager.AppSettings["password"]);
 
             foreach (var emp in employees.Where(e => e.workstation.StartsWith("EPRUIZHW0249")))
